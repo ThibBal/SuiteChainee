@@ -5,14 +5,20 @@ import java.util.List;
 public class ListeChainee implements Linkable {
 	
 	public List<Integer> list = new ArrayList<Integer>();
+	public Element start;
 	
-	public ListeChainee(List<Integer> list){
-		this.list = list;
+	public ListeChainee(Element firstElement){
+		start = firstElement;
 	}
+	
+//	public ListeChainee(List<Integer> list){
+//		this.list = list;
+//	}
 
 	@Override
-	public void add(int element) {
-		this.list.add(element);
+	public void add(int value) {
+		Element nextElement = new Element(value);
+		//start.setNext(nextElement);
 	}
 
 	@Override

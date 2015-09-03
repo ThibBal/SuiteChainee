@@ -8,37 +8,42 @@ import java.util.List;
 
 public class Main {
 	
-	public static void main(String [] args)
+	public static void main(String [] args) throws Exception
 	{
-		SuiteChainee("MaListe.properties", "product", 4, 8, 6, true);
+		System.out.println("--Welcome to Lab 1--");
+		SuiteChainee suite = new SuiteChainee("MaListe.properties", "addition", 4, 8, 9, true);
+		System.out.println("--Everything seems perfect. Bye!--");
 	}
 	
-	public static void SuiteChainee(String path, String op, int va1, int va2, int size, boolean empty){
-		List<Integer> listNumbers = new ArrayList<Integer>();
-		ListeChainee list = new ListeChainee(listNumbers);
+
+	
+	public static void SuiteChainee(String path, String op, int val1, int val2, int size, boolean empty){
+//		List<Integer> listNumbers = new ArrayList<Integer>();
+		Element firstElement = new Element(val1);
+		ListeChainee list = new ListeChainee(firstElement);
 		
-		list.add(va1);
-		list.add(va2);
+		//list.add(val1);
+		//list.add(val2);
 		
 		for (int i = 2; i < size; i++){
 			if (op.equals("addition")){
 				list.setAt(Operators.addition(list.getAt(i-2), list.getAt(i-1)), i);
 			}
-			else if (op.equals("substraction")){
-				list.setAt(Operators.substraction(list.getAt(i-2), list.getAt(i-1)), i);
-			}
-			else if (op.equals("product")){
-				list.setAt(Operators.product(list.getAt(i-2), list.getAt(i-1)), i);
-			}
-			else if (op.equals("division")){
-				list.setAt(Operators.division(list.getAt(i-2), list.getAt(i-1)), i);
-			}
-			else {
-				System.out.println("Operator invalid");
-			} 
+//			else if (op.equals("substraction")){
+//				list.setAt(Operators.substraction(list.getAt(i-2), list.getAt(i-1)), i);
+//			}
+//			else if (op.equals("product")){
+//				list.setAt(Operators.product(list.getAt(i-2), list.getAt(i-1)), i);
+//			}
+//			else if (op.equals("division")){
+//				list.setAt(Operators.division(list.getAt(i-2), list.getAt(i-1)), i);
+//			}
+//			else {
+//				System.out.println("Operator invalid");
+//			} 
 		}
 		
-		displayList(listNumbers);
+		//displayList(list);
 
 		//int[] myList = computeList(op, va1, va2, size);
 		//isValid
@@ -46,7 +51,7 @@ public class Main {
 		//	size <= 10 >0
 		// si valide : 
 		
-		writeToFile(path, listNumbers, op, 0, size);
+		//writeToFile(path, listNumbers, op, 0, size);
 
 	}
 	
