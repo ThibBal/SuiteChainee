@@ -1,3 +1,8 @@
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 
 public class SuiteChainee implements ListInterface {
 
@@ -22,7 +27,7 @@ public class SuiteChainee implements ListInterface {
 		this.étatVide = étatVide;
 		
 		//Check if the list is valid
-		//isValide();
+		isValide();
 		
 		//Initiate the list
 		firstElement = new Element(val1);
@@ -60,8 +65,17 @@ public class SuiteChainee implements ListInterface {
 			default:
 				throw new Exception("Invalid operator");
 			}
-		
 		display();
+		//TODO : POSITION : commence à 0 ou 1 ?
+//		System.out.println(getSize());
+//		Element nouvelElement = new Element(314);
+//		setAt(nouvelElement, 3);
+//		removeAt(3);
+//		reset();
+		//Element elementRetirer = new Element(220, null);
+	    //Element avantDernier = firstElement.getNextElement();
+	  	//removeItem(avantDernier);
+		//display();
 	}
 	
 	public void display() {
@@ -75,28 +89,87 @@ public class SuiteChainee implements ListInterface {
 		System.out.println("\n--End--");
 	}
 	
+	public static void saveToFile(String path, SuiteChainee suite, String op, int index, int size){
+    	File file = new File(path);
+    	
+        try {
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+			 
+			FileWriter fw = new FileWriter(file.getAbsoluteFile());
+			BufferedWriter bw = new BufferedWriter(fw);
+			Element firstElement = suite.getAt(0);
+			bw.write("Paramètre 1 : "+ firstElement.getValue() +" \n");
+			bw.write("Paramètre 2 : "+ firstElement.getNextElement().getValue() +" \n");
+			bw.write("Paramètre 3 : "+ op +" \n");
+			bw.write("Paramètre 4 : "+ index +" \n");
+			bw.write("Paramètre 5 : "+ size +" \n");
+			bw.write("Paramètre 6 : ");
+			Element currentElement = firstElement;
+			bw.write(currentElement.getValue()+" ");
+			while (currentElement.getNextElement() != null){
+				currentElement = currentElement.getNextElement();
+				bw.write(currentElement.getValue()+" ");
+					
+			}
+			bw.write("\n");
+			bw.close();
+			
+		} catch (IOException  e) {
+            throw new RuntimeException("Error writing file ["+ file + "]");
+		}
+	}
+	
 	@Override
 	public void add(Element secondElement) {
 		firstElement.add(secondElement);
-		
 	}
 
 	@Override
 	public void removeAt(int position) {
-		// TODO Auto-generated method stub
-		
+		// Supprime et reconstruit la liste
+		int cursor = 0;
+		Element currentElement = firstElement;
+		while (currentElement.getNextElement() != null){
+			if(cursor == position - 1){
+				Element newNextElement = currentElement.getNextElement().getNextElement();
+				currentElement.setNextElement(newNextElement);
+				return;
+			}
+			currentElement = currentElement.getNextElement();
+			cursor++;
+		}		
 	}
 
 	@Override
 	public void removeItem(Element element) {
-		// TODO Auto-generated method stub
-		
+
+		int cursor = 0;
+		Element currentElement = firstElement;
+		while (currentElement.getNextElement() != null){
+			if(currentElement == element){
+				Element newNextElement = currentElement.getNextElement();
+				setAt(newNextElement, cursor);
+				return;
+			}
+			currentElement = currentElement.getNextElement();
+			cursor++;
+		}	
 	}
 
 	@Override
 	public void setAt(Element element, int position) {
-		// TODO Auto-generated method stub
-		
+		int cursor = 0;
+		Element currentElement = firstElement;
+		while (currentElement.getNextElement() != null){
+			if(cursor == position -1){	
+				currentElement.setNextElement(element);
+				return;
+			}
+			currentElement = currentElement.getNextElement();
+			cursor++;
+		}		
 	}
 
 	@Override
@@ -115,19 +188,50 @@ public class SuiteChainee implements ListInterface {
 
 	@Override
 	public int getSize() {
-		// TODO Auto-generated method stub
-		return 0;
+		int size = 1;
+		Element currentElement = firstElement;
+		while (currentElement.getNextElement() != null){
+			currentElement = currentElement.getNextElement();
+			size++;
+		}
+		return size;
 	}
 
 	@Override
 	public void reset() {
-		// TODO Auto-generated method stub
-		
+		// TODO Remet la chaîne à vide
+		firstElement.setNextElement(null);
 	}
 
 	@Override
-	public boolean isValide() {
+	public boolean isValide() throws Exception {
 		System.out.println("--Start the validation of the list--");
+		boolean operatorCheck = false;
+	    boolean sizeListCheck = false; 
+	    
+        //test validité opération
+       	if ((opérateur == ("addition") || (opérateur == "substraction") || (opérateur == "product") || (opérateur == "division"))){
+            operatorCheck = true;
+        }
+        else {
+            throw new Exception("Invalid Operation");
+        }
+        
+        //test validité dimension
+        if(taille > 1 && taille <= 10){
+            sizeListCheck = true;
+        }
+        else{
+            throw new Exception("Invalid Dimension");
+        }
+        
+        // réponse finale
+        if (operatorCheck && sizeListCheck){
+            System.out.println("The construction is valid");
+        }
+        else{
+            throw new Exception("Invalid Operation");
+        }
 		System.out.println("--End of the validation, it's fine--");
 		return false;
 	}

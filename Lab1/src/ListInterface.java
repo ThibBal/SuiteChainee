@@ -23,5 +23,5 @@ public interface ListInterface {
 	void reset();
 		
 	//qui retourne vrai si la chaine a été construite suivant les règles.
-	boolean isValide(); 
+	boolean isValide() throws Exception; 
 }
