@@ -21,10 +21,28 @@ public class Main {
 	{
 		System.out.println("--Welcome to Lab 1--");
 		SuiteChainee suite = new SuiteChainee("MaListe.properties", "addition", 4, 8, 9, true);
-		//TODO : SuiteChainee.isValide(); ici ?
-		SuiteChainee.saveToFile("MaListe.properties", suite, "addition", 0, 9);
 		
-	
+		// Affiche la liste dans la console
+		//display();
+				
+		//	Test de la fonction "getSize()"
+		//	System.out.println(getSize());
+		
+		//	Test de la fonction "setAt()"
+		//	Element nouvelElement = new Element(314);
+		//	setAt(nouvelElement, 3);
+		
+		//	Test de la fonction "remove()"
+		//	removeAt(3);
+		
+		//	Test de la fonction "reset()"
+		//	reset();
+		
+		//	Test de la fonction "removeItem()"
+		//	Element elementRetirer = new Element(220, null);
+	    //	Element avantDernier = firstElement.getNextElement();
+	  	//	removeItem(avantDernier);
+		
 		System.out.println("--Everything seems perfect. Bye!--");
 	}
 		

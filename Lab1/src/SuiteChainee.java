@@ -20,6 +20,7 @@ public class SuiteChainee implements ISuiteChainee {
 	int taille;
 	boolean étatVide;
 	Element firstElement;
+	private int index = 0;
 	
 	/**
 	 * Construit une SuiteChainee.
@@ -39,9 +40,15 @@ public class SuiteChainee implements ISuiteChainee {
 		this.val2 = val2;
 		this.taille = taille;
 		this.étatVide = étatVide;
+		//this.firstElement = firstElement;
 		
 		//Vérifie que les paramètres d'entrée sont valides pour construire la liste selon le règlement
 		isValide();
+		
+		//Vérifie si la liste est vide
+		if (!étatVide){
+			isVide(chemin);
+		}
 		
 		//Initialise la liste avec ses deux premiers éléments
 		firstElement = new Element(val1);
@@ -58,13 +65,13 @@ public class SuiteChainee implements ISuiteChainee {
 					add(newElement);
 				}
 				break;
-			case "substraction":
+			case "soustraction":
 				for (int i = 2; i < taille; i++){
 					Element newElement = new Element(Operateurs.substraction(getAt(i-2).getValue(),getAt(i-1).getValue()));
 					add(newElement);
 				}
 				break;				
-			case "product":
+			case "multiplication":
 				for (int i = 2; i < taille; i++){
 					Element newElement = new Element(Operateurs.product(getAt(i-2).getValue(),getAt(i-1).getValue()));
 					add(newElement);
@@ -80,11 +87,13 @@ public class SuiteChainee implements ISuiteChainee {
 				throw new Exception("Invalid operator");
 			}
 		
+		String contenu = saveToFile(chemin, firstElement, op, index, taille);
+		System.out.println("MaListe	: "+contenu);
+		
+		
 		// Affiche la liste dans la console
-		display();
-		
-		//TODO : POSITION : commence à 0 ou 1 ?
-		
+		//display();
+				
 		//	Test de la fonction "getSize()"
 		//	System.out.println(getSize());
 		
@@ -102,6 +111,7 @@ public class SuiteChainee implements ISuiteChainee {
 		//	Element elementRetirer = new Element(220, null);
 	    //	Element avantDernier = firstElement.getNextElement();
 	  	//	removeItem(avantDernier);
+		
 	}
 	
 	/**
@@ -122,14 +132,15 @@ public class SuiteChainee implements ISuiteChainee {
 	 * Sauvegarde la Suite dans un fichier.
 	 *
 	 * @param path : chemin vers le nom du fichier
-	 * @param suite : SuiteChainee à sauvergarder
+	 * @param firstElement : premier élément de la suite
 	 * @param op : opérateur utilisé
 	 * @param index : dernier index depuis lequel la chaîne a été rempli
 	 * @param size : taille de la chaîne
+	 * @return contenu : String contenant le contenu de la chaîne
 	 */
-	public static void saveToFile(String path, SuiteChainee suite, String op, int index, int size){
+	public static String saveToFile(String path, Element firstElement,  String op, int index, int size){
     	File file = new File(path);
-    	
+    	String contenu = "";
         try {
 			if (!file.exists()) {
 				file.createNewFile();
@@ -137,34 +148,36 @@ public class SuiteChainee implements ISuiteChainee {
 			 
 			FileWriter fw = new FileWriter(file.getAbsoluteFile());
 			BufferedWriter bw = new BufferedWriter(fw);
-			Element firstElement = suite.getAt(0);
 			bw.write("Paramètre 1 : "+ firstElement.getValue() +" \n");
 			bw.write("Paramètre 2 : "+ firstElement.getNextElement().getValue() +" \n");
 			bw.write("Paramètre 3 : "+ op +" \n");
 			bw.write("Paramètre 4 : "+ index +" \n");
 			bw.write("Paramètre 5 : "+ size +" \n");
 			bw.write("Paramètre 6 : ");
+			
 			Element currentElement = firstElement;
-			bw.write(currentElement.getValue()+" ");
+			contenu+=currentElement.getValue()+" ";
 			while (currentElement.getNextElement() != null){
 				currentElement = currentElement.getNextElement();
-				bw.write(currentElement.getValue()+" ");
-					
+				contenu+=currentElement.getValue()+" ";									
 			}
+			bw.write(contenu);
 			bw.write("\n");
 			bw.close();
 			
 		} catch (IOException  e) {
             throw new RuntimeException("Error writing file ["+ file + "]");
 		}
+        
+        return contenu;
 	}
 	
 	/* (non-Javadoc)
 	 * @see ISuiteChainee#add(Element)
 	 */
 	@Override
-	public void add(Element secondElement) {
-		firstElement.add(secondElement);
+	public void add(Element newElement) {
+		firstElement.add(newElement);
 	}
 
 	/* (non-Javadoc)
@@ -258,7 +271,6 @@ public class SuiteChainee implements ISuiteChainee {
 	 */
 	@Override
 	public void reset() {
-		// TODO Remet la chaîne à vide
 		firstElement.setNextElement(null);
 	}
 
@@ -267,19 +279,18 @@ public class SuiteChainee implements ISuiteChainee {
 	 */
 	@Override
 	public boolean isValide() throws Exception {
-		System.out.println("--Start the validation of the list--");
 		boolean operatorCheck = false;
 	    boolean sizeListCheck = false; 
 	    
-        //test validité opération
-       	if ((op == ("addition") || (op == "substraction") || (op == "product") || (op == "division"))){
+        //Test de la validité de l'opération
+       	if ((op == ("addition") || (op == "soustraction") || (op == "multiplication") || (op == "division"))){
             operatorCheck = true;
         }
         else {
             throw new Exception("Invalid Operation");
         }
         
-        //test validité dimension
+        //Test de la validité de la taille
         if(taille > 1 && taille <= 10){
             sizeListCheck = true;
         }
@@ -287,29 +298,27 @@ public class SuiteChainee implements ISuiteChainee {
             throw new Exception("Invalid Dimension");
         }
         
-        // réponse finale
+        // Réponse finale
         if (operatorCheck && sizeListCheck){
-            System.out.println("The construction is valid");
+            return true;
         }
         else{
             throw new Exception("Invalid Operation");
         }
-		System.out.println("--End of the validation, it's fine--");
-		return false;
 	}
 
-	public static void readFile(String path, boolean etatVide){
-		String chaine ="";
+	/**
+	 * Vérifie si la liste est vide.
+	 */
+	public static void isVide(String path){
 		int nbLigne = 0;
 
 		try{
 			InputStream ins=new FileInputStream(path); 
 			InputStreamReader insr=new InputStreamReader(ins);
 			BufferedReader br=new BufferedReader(insr);
-			String ligne;
-			while ((ligne=br.readLine())!=null){
-				//System.out.println(ligne);
-				chaine+=ligne+"\n";
+			
+			while ((br.readLine())!=null){
 				nbLigne++;
 			}
 			br.close(); 
@@ -317,26 +326,12 @@ public class SuiteChainee implements ISuiteChainee {
 		catch (Exception e){
 			System.out.println(e.toString());
 		}
-		//System.out.println(nbLigne);
 
 		if(nbLigne != 0){
-			etatVide = false;
 			System.out.println("The file is not empty. It contains informations."+"\n");
 		}else{
 			System.out.println("The file is empty."+"\n");
 		}
-	}
-
-	public static void readLine(String path) throws IOException{
-		FileInputStream fs= new FileInputStream(path);
-		BufferedReader br = new BufferedReader(new InputStreamReader(fs));
-		for(int i = 0; i < 5; ++i)
-		  br.readLine();
-		String lineIWant = br.readLine();
-		
-		System.out.println("--Display of the list--");
-		System.out.println(lineIWant);
-		System.out.println("--End--"+"\n");
 	}
 
 }
