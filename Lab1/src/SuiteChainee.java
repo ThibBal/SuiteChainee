@@ -3,12 +3,10 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.LineNumberReader;
 
 
 public class SuiteChainee implements ListInterface {
@@ -72,7 +70,6 @@ public class SuiteChainee implements ListInterface {
 		default:
 			throw new Exception("Invalid operator");
 		}
-		display();
 		//TODO : POSITION : commence à 0 ou 1 ?
 		//		System.out.println(getSize());
 		//		Element nouvelElement = new Element(314);
@@ -83,17 +80,6 @@ public class SuiteChainee implements ListInterface {
 		//Element avantDernier = firstElement.getNextElement();
 		//removeItem(avantDernier);
 		//display();
-	}
-
-	public void display() {
-		System.out.println("--Display of the list--");
-		System.out.print(firstElement.getValue()+" ");
-		Element currentElement = firstElement;
-		while (currentElement.getNextElement() != null){
-			currentElement = currentElement.getNextElement();
-			System.out.print(currentElement.getValue()+" ");
-		}
-		System.out.println("\n--End--"+"\n");
 	}
 
 	public static void saveToFile(String path, SuiteChainee suite, String op, int index, int size){
@@ -157,8 +143,16 @@ public class SuiteChainee implements ListInterface {
 		}
 	}
 
-	public static void readLine(String path){
-
+	public static void readLine(String path) throws IOException{
+		FileInputStream fs= new FileInputStream(path);
+		BufferedReader br = new BufferedReader(new InputStreamReader(fs));
+		for(int i = 0; i < 5; ++i)
+		  br.readLine();
+		String lineIWant = br.readLine();
+		
+		System.out.println("--Display of the list--");
+		System.out.println(lineIWant);
+		System.out.println("--End--"+"\n");
 	}
 
 	@Override
